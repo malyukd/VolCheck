@@ -1,2 +1,0 @@
-/usr/bin/ar qc libstream.a CMakeFiles/stream.dir/TCPstream.cpp.o
-/usr/bin/ranlib libstream.a
