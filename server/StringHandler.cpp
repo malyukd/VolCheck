@@ -25,7 +25,7 @@ void StringHandler::divide(char* str, size_t size, int format) {
         throw std::invalid_argument("error");
     }
     int i = 0;
-    while (ind != p && this->format[format]+1)
+    while (ind != p && format+1<strlen(this->format[format]))
         *(this->format[format]++) = *(ind++);
     *(this->format[format]) = '\0';
     ind += strlen(this->symbol[format]);
