@@ -6,18 +6,19 @@ using namespace std;
 
 class TCPAcceptor
 {
-    int    m_lsd;
-    int    m_port;
-    string m_address;
-    bool   m_listening;
-    
-  public:
-    TCPAcceptor(int port, const char* address="");
-    ~TCPAcceptor();
+  int m_lsd;
+  int m_port;
+  string m_address;
+  bool m_listening;
 
-    int        start();
-    TCPStream* accept();
+public:
+  TCPStream *stream;
+  TCPAcceptor(int port, const char *address = "");
+  ~TCPAcceptor();
 
-  private:
-    TCPAcceptor() {}
+  int start();
+  void accept();
+
+private:
+  TCPAcceptor() {}
 };

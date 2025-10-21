@@ -6,7 +6,7 @@
 #include <errno.h>
 #include "TCPconnector.h"
 
-TCPStream* TCPConnector::connect(const char* server, int port)
+void TCPConnector::connect(const char* server, int port)
 {
     struct sockaddr_in address;
 
@@ -21,18 +21,23 @@ TCPStream* TCPConnector::connect(const char* server, int port)
     int sd = socket(AF_INET, SOCK_STREAM, 0);
     if (sd < 0) {
         perror("socket() failed");
-        return NULL;
+        this->stream = NULL;
     }
     if (::connect(sd, (struct sockaddr*)&address, sizeof(address)) != 0) {
         perror("connect() failed");
         close(sd);
-        return NULL;
+        this->stream = NULL;
     }
-    return new TCPStream(sd, &address);
+    this->stream = new TCPStream(sd, &address);
+}
+
+TCPConnector::~TCPConnector()
+{
+    delete this->stream;
 }
 
 int TCPConnector::resolveHostName(const char* hostname, struct in_addr* addr) 
-{
+{ //чтобы можно было подключаться по доменному имени
     struct addrinfo *res;
   
     int result = getaddrinfo (hostname, NULL, NULL, &res);

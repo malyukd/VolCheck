@@ -19,17 +19,17 @@ int main(int argc, char **argv)
     string message;
     char line[256];
     TCPConnector *connector = new TCPConnector();
-    TCPStream *stream = connector->connect(argv[2], atoi(argv[1]));
+    connector->connect(argv[2], atoi(argv[1]));
 
     while (message != "exit")
     {
         cin >> message;
-        stream->send(message.c_str(), message.size());
+        connector->stream->send(message.c_str(), message.size());
         printf("sent - %s\n", message.c_str());
-        len = stream->receive(line, sizeof(line));
+        len = connector->stream->receive(line, sizeof(line));
         line[len] = 0;
         printf("received - %s\n", line);
     }
-    delete stream;
+    delete connector;
     exit(0);
 }
