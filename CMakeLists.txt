@@ -6,7 +6,6 @@ set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-include_directories(include)
 add_subdirectory(stream)
 add_subdirectory(client)
 add_subdirectory(server)
