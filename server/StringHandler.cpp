@@ -6,7 +6,7 @@
 StringHandler::StringHandler(char* str) {
     strcpy(this->str, str);
     try {
-        divide(this->str, sizeof(this->str), 0);
+        divide(this->str);
     }
     catch (std::exception ex) {
         sprintf(this->error, "Request is invalid. Invalid format");
@@ -14,23 +14,27 @@ StringHandler::StringHandler(char* str) {
     }
 }
 
-void StringHandler::divide(char* str, size_t size, int format) {
-    char* ind = str;
-    if (format == 3) {
-        strcpy(this->volume_name, ind);
-        return;
-    }
-    char* p = strstr(ind, this->symbol[format]);
-    if (p == nullptr || strlen(ind) <= strlen(this->symbol[format])) {
-        throw std::invalid_argument("error");
-    }
+void StringHandler::divide(char* str) {
+    char* context = nullptr;
+    char* token = strtok(str, ":/");
     int i = 0;
-    while (ind != p && format+1<strlen(this->format[format]))
-        *(this->format[format]++) = *(ind++);
-    *(this->format[format]) = '\0';
-    ind += strlen(this->symbol[format]);
-    divide(ind, size, format+1);
+    
+    while (token != nullptr) {
+        if (i >= 4) {
+            throw std::invalid_argument("invalid format");
+        }
+        if (strlen(token) <= this->sizes[i]) {
+            sprintf(this->format[i], "%s", token);
+        }
+        else {
+            sprintf(this->error, "Request is invalid. Wrong parameter %s: %s", name[i], token);
+            validation[i] = false;
+        }
+        token = strtok(nullptr, ":/");
+        i++;
+    }
 }
+
 
 bool StringHandler::isProtocolValid() {
     if (!strcmp(this->protocol, "tcp") || !strcmp(this->protocol, "iscsi") || !strcmp(this->protocol, "nbd"))
@@ -81,22 +85,26 @@ bool StringHandler::isVolumeNameValid() {
 }
 
 bool StringHandler::isValid() {
-    if (!this->valid)
+    if (!valid)
         return false;
     if (!isProtocolValid()) {
-        sprintf(this->error, "Request is invalid. Wrong parameter %s: %s", name[0], this->protocol);
+        if(validation[0]!=false)
+            sprintf(this->error, "Request is invalid. Wrong parameter %s: %s", name[0], this->protocol);
         return false;
     }
     if (!isIPValid()) {
-        sprintf(this->error, "Request is invalid. Wrong parameter %s: %s", name[1], this->ip_a);
+        if (validation[1] != false)
+            sprintf(this->error, "Request is invalid. Wrong parameter %s: %s", name[1], this->ip_a);
         return false;
     }
     if (!isPortValid()) {
-        sprintf(this->error, "Request is invalid. Wrong parameter %s: %s", name[2], this->port);
+        if (validation[2] != false)
+            sprintf(this->error, "Request is invalid. Wrong parameter %s: %s", name[2], this->port);
         return false;
     }
     if (!isVolumeNameValid()) {
-        sprintf(this->error, "Request is invalid. Wrong parameter %s: %s", name[3], this->volume_name);
+        if (validation[3] != false)
+            sprintf(this->error, "Request is invalid. Wrong parameter %s: %s", name[3], this->volume_name);
         return false;
     }
     return true;
