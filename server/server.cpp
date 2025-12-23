@@ -29,6 +29,7 @@ int main(int argc, char **argv)
         exit(1);
     }
     ssize_t len;
+    ssize_t len2;
     char line[256];
     while (true)
     {
@@ -39,7 +40,7 @@ int main(int argc, char **argv)
 
         while ((len = acceptor->stream->receive(line, sizeof(line))) > 0)
         {
-            line[len] = 0;
+            line[len-1] = 0;
             printf("received - %s\n", line);
             if (!strcmp(line, "exit"))
             {
@@ -51,15 +52,19 @@ int main(int argc, char **argv)
                 StringHandler str(line);
                 if (str.isValid())
                 {
-                    acceptor->stream->send("Success", len);
+                    char resp[] = "Success\n";
+                    len2=acceptor->stream->send(resp, sizeof(resp));
                     printf("Success");
                 }
                 else
                 {
-                    acceptor->stream->send(str.error, sizeof(str.error));
+                    char* err = str.error;
+                    len2=acceptor->stream->send(str.error, strlen(err));
                     printf("sent - %s\n", str.error);
                 }
+                printf("sent - %ld\n", len2);
             }
+        
         }
     }
     delete acceptor;

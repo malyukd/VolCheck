@@ -27,7 +27,7 @@ void StringHandler::divide(char* str) {
             sprintf(this->format[i], "%s", token);
         }
         else {
-            sprintf(this->error, "Request is invalid. Wrong parameter %s: %s", name[i], token);
+            sprintf(this->error, "Request is invalid. Wrong parameter %s: %s\n", name[i], token);
             validation[i] = false;
         }
         token = strtok(nullptr, ":/");
@@ -89,22 +89,22 @@ bool StringHandler::isValid() {
         return false;
     if (!isProtocolValid()) {
         if(validation[0]!=false)
-            sprintf(this->error, "Request is invalid. Wrong parameter %s: %s", name[0], this->protocol);
+            sprintf(this->error, "Request is invalid. Wrong parameter %s: %s\n", name[0], this->protocol);
         return false;
     }
     if (!isIPValid()) {
         if (validation[1] != false)
-            sprintf(this->error, "Request is invalid. Wrong parameter %s: %s", name[1], this->ip_a);
+            sprintf(this->error, "Request is invalid. Wrong parameter %s: %s\n", name[1], this->ip_a);
         return false;
     }
     if (!isPortValid()) {
         if (validation[2] != false)
-            sprintf(this->error, "Request is invalid. Wrong parameter %s: %s", name[2], this->port);
+            sprintf(this->error, "Request is invalid. Wrong parameter %s: %s\n", name[2], this->port);
         return false;
     }
     if (!isVolumeNameValid()) {
         if (validation[3] != false)
-            sprintf(this->error, "Request is invalid. Wrong parameter %s: %s", name[3], this->volume_name);
+            sprintf(this->error, "Request is invalid. Wrong parameter %s: %s\n", name[3], this->volume_name);
         return false;
     }
     return true;
